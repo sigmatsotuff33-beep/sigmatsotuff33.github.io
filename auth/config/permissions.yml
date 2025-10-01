@@ -1,0 +1,31 @@
+permissions:
+  system:
+    - system.shutdown
+    - system.restart
+    - system.config
+    - system.backup
+  
+  user:
+    - user.create
+    - user.delete
+    - user.ban
+    - user.warn
+    - user.promote
+    - user.demote
+  
+  content:
+    - content.create
+    - content.edit
+    - content.delete
+    - content.view
+    - content.approve
+  
+  config:
+    - config.view
+    - config.edit
+    - config.reset
+  
+  audit:
+    - audit.view
+    - audit.export
+    - audit.clear
