@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Counter Intelligence</title>
+    <link rel="stylesheet" href="styles/admin.css">
+    <link rel="stylesheet" href="styles/components.css">
+</head>
+<body class="admin-dashboard">
+    <!-- Header -->
+    <div id="adminHeader"></div>
+
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <div id="adminSidebar"></div>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Dashboard Overview -->
+            <div id="dashboardView" class="view active">
+                <div class="dashboard-header">
+                    <h1>Control Center</h1>
+                    <p>Welcome back, <span id="adminName">Administrator</span></p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📄</div>
+                        <div class="stat-info">
+                            <h3>Pages</h3>
+                            <span id="pagesCount">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📎</div>
+                        <div class="stat-info">
+                            <h3>Files</h3>
+                            <span id="filesCount">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-info">
+                            <h3>Users</h3>
+                            <span id="usersCount">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔗</div>
+                        <div class="stat-info">
+                            <h3>Links</h3>
+                            <span id="linksCount">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <h2>Quick Actions</h2>
+                    <div class="actions-grid">
+                        <button class="action-btn" onclick="showView('pagesView')">
+                            <span class="action-icon">➕</span>
+                            Create Page
+                        </button>
+                        <button class="action-btn" onclick="showView('filesView')">
+                            <span class="action-icon">📤</span>
+                            Upload File
+                        </button>
+                        <button class="action-btn" onclick="showView('linksView')">
+                            <span class="action-icon">🔗</span>
+                            Add Link
+                        </button>
+                        <button class="action-btn" onclick="showView('usersView')">
+                            <span class="action-icon">👤</span>
+                            Manage Users
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pages Management -->
+            <div id="pagesView" class="view">
+                <div class="view-header">
+                    <h2>Pages Management</h2>
+                    <button class="btn-primary" onclick="openCreatePageModal()">Create New Page</button>
+                </div>
+                <div class="content-table" id="pagesTable">
+                    <!-- Pages will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Files Management -->
+            <div id="filesView" class="view">
+                <div class="view-header">
+                    <h2>Files Management</h2>
+                    <button class="btn-primary" onclick="openUploadModal()">Upload Files</button>
+                </div>
+                <div class="file-manager" id="fileManager">
+                    <!-- Files will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Links Management -->
+            <div id="linksView" class="view">
+                <div class="view-header">
+                    <h2>External Links</h2>
+                    <button class="btn-primary" onclick="openCreateLinkModal()">Add New Link</button>
+                </div>
+                <div class="links-grid" id="linksGrid">
+                    <!-- Links will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Users Management -->
+            <div id="usersView" class="view">
+                <div class="view-header">
+                    <h2>User Management</h2>
+                    <button class="btn-primary" onclick="openCreateUserModal()">Add User</button>
+                </div>
+                <div class="users-table" id="usersTable">
+                    <!-- Users will be loaded here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="modalContainer"></div>
+
+    <script src="scripts/admin-core.js"></script>
+    <script src="scripts/content-manager.js"></script>
+    <script src="scripts/file-manager.js"></script>
+    <script src="scripts/page-editor.js"></script>
+    <script src="scripts/user-manager.js"></script>
+</body>
+</html>
