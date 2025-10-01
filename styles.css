@@ -1,1 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counter Intelligence Documentary</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=JetBrains+Mono:wght@300;400;500&display=swap');
+        
+        :root {
+            --primary: #00ff88;
+            --secondary: #0088ff;
+            --accent: #ff0088;
+            --dark: #0a0a0f;
+            --darker: #050508;
+            --light: #ffffff;
+            --glow: 0 0 20px var(--primary);
+            --glow-secondary: 0 0 20px var(--secondary);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--darker);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 136, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255, 0, 136, 0.05) 0%, transparent 50%);
+            animation: backgroundShift 20s ease-in-out infinite;
+        }
+        
+        @keyframes backgroundShift {
+            0%, 100% { background-position: 0% 0%, 100% 100%, 50% 50%; }
+            50% { background-position: 100% 100%, 0% 0%, 80% 80%; }
+        }
+        
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, rgba(10, 10, 15, 0.9) 0%, rgba(5, 5, 8, 0.95) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            transform: translateY(0);
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: var(--glow);
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        header:hover::before {
+            left: 100%;
+        }
+        
+        header:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 255, 136, 0.3);
+        }
+        
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: var(--glow);
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes titleGlow {
+            0%, 100% { text-shadow: 0 0 20px var(--primary), 0 0 40px var(--primary); }
+            50% { text-shadow: 0 0 30px var(--secondary), 0 0 60px var(--secondary); }
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--primary);
+            font-weight: 300;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            animation: subtitlePulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes subtitlePulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+        
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 40px 0;
+        }
+        
+        .nav-btn {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 136, 255, 0.1) 100%);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            color: var(--primary);
+            padding: 15px 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 500;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .nav-btn:hover::before {
+            left: 100%;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: var(--glow);
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2) 0%, rgba(0, 136, 255, 0.2) 100%);
+        }
+        
+        .nav-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+        
+        .content {
+            display: none;
+            background: linear-gradient(135deg, rgba(10, 10, 15, 0.9) 0%, rgba(5, 5, 8, 0.95) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 20px;
+            animation: contentSlide 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            transform-origin: top center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        @keyframes contentSlide {
+            0% { 
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            100% { 
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .active {
+            display: block;
+        }
+        
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 2rem;
+            text-shadow: var(--glow);
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .card {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.05) 0%, rgba(0, 136, 255, 0.05) 100%);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+        
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: var(--glow);
+            border-color: var(--primary);
+        }
+        
+        .terminal {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--primary);
+            border-radius: 12px;
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+            position: relative;
+            box-shadow: inset 0 0 30px rgba(0, 255, 136, 0.1);
+        }
+        
+        .terminal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            animation: scanLine 2s linear infinite;
+        }
+        
+        @keyframes scanLine {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+        
+        .encrypted {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--secondary);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            color: var(--secondary);
+            text-shadow: 0 0 10px var(--secondary);
+            animation: encryptPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes encryptPulse {
+            0%, 100% { opacity: 0.7; box-shadow: 0 0 20px rgba(0, 136, 255, 0.3); }
+            50% { opacity: 1; box-shadow: 0 0 30px rgba(0, 136, 255, 0.6); }
+        }
+        
+        input[type="text"] {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            padding: 12px 15px;
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+            width: 100%;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            box-shadow: var(--glow);
+            border-color: var(--primary);
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: particleFloat 20s linear infinite;
+        }
+        
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="matrix-bg"></div>
+    
+    <div class="container">
+        <header>
+            <h1>Counter Intelligence Documentary</h1>
+            <div class="subtitle">doc iota aegis</div>
+        </header>
 
+        <div class="nav-grid">
+            <button class="nav-btn" onclick="showSection('overview')">Overview</button>
+            <button class="nav-btn" onclick="showSection('operations')">Operations</button>
+            <button class="nav-btn" onclick="showSection('intel')">Intelligence</button>
+            <button class="nav-btn" onclick="showSection('tools')">Tools</button>
+            <button class="nav-btn" onclick="showSection('comms')">Communications</button>
+            <button class="nav-btn" onclick="initiateSecureProtocol()">Secure Protocol</button>
+            <button class="nav-btn" onclick="encryptData()">Encrypt Data</button>
+            <button class="nav-btn" onclick="runDiagnostic()">System Diagnostic</button>
+        </div>
+
+        <div id="overview" class="content active">
+            <h2>Operational Overview</h2>
+            <p>Documentation and intelligence repository for ongoing counter-intelligence operations.</p>
+            <div class="grid">
+                <div class="card">
+                    <h3>Mission Statement</h3>
+                    <p>Primary objectives and operational parameters.</p>
+                </div>
+                <div class="card">
+                    <h3>Team Structure</h3>
+                    <p>Operational hierarchy and team composition.</p>
+                </div>
+                <div class="card">
+                    <h3>Protocols</h3>
+                    <p>Standard operating procedures and emergency protocols.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="operations" class="content">
+            <h2>Active Operations</h2>
+            <p>Current field operations and mission status.</p>
+            <div class="terminal" id="opsTerminal"></div>
+        </div>
+
+        <div id="intel" class="content">
+            <h2>Intelligence Database</h2>
+            <p>Classified intelligence and analysis reports.</p>
+            <div class="encrypted" id="encryptedData">[ENCRYPTED DATA STREAM]</div>
+            <button class="nav-btn" onclick="decryptIntel()">Decrypt Intelligence</button>
+        </div>
+
+        <div id="tools" class="content">
+            <h2>Operational Tools</h2>
+            <p>Authorized software and hardware resources.</p>
+            <div class="grid">
+                <div class="card">
+                    <h3>Surveillance Suite</h3>
+                    <p>Monitoring and tracking utilities.</p>
+                </div>
+                <div class="card">
+                    <h3>Analysis Tools</h3>
+                    <p>Data processing and pattern recognition.</p>
+                </div>
+                <div class="card">
+                    <h3>Communication</h3>
+                    <p>Secure channels and encryption systems.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="comms" class="content">
+            <h2>Secure Communications</h2>
+            <p>Encrypted messaging and data transfer protocols.</p>
+            <div class="terminal" id="commsTerminal"></div>
+            <input type="text" id="messageInput" placeholder="Enter secure message">
+            <button class="nav-btn" onclick="sendSecureMessage()">Transmit</button>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            document.querySelectorAll('.content').forEach(section => {
+                section.classList.remove('active');
+            });
+            setTimeout(() => {
+                document.getElementById(sectionId).classList.add('active');
+            }, 50);
+        }
+
+        function initiateSecureProtocol() {
+            const terminal = document.getElementById('opsTerminal');
+            terminal.innerHTML = '';
+            typeText(terminal, 'Initiating secure protocol...\n');
+            setTimeout(() => typeText(terminal, 'Establishing encrypted connection...\n'), 1000);
+            setTimeout(() => typeText(terminal, 'Authentication verified...\n'), 2000);
+            setTimeout(() => typeText(terminal, 'Secure channel established...\n'), 3000);
+            setTimeout(() => typeText(terminal, 'Protocol IOTA-AEGIS active...\n'), 4000);
+            showSection('operations');
+        }
+
+        function encryptData() {
+            const encryptedDiv = document.getElementById('encryptedData');
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let newEncryption = '';
+            for (let i = 0; i < 64; i++) {
+                newEncryption += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            encryptedDiv.textContent = newEncryption;
+            showSection('intel');
+        }
+
+        function decryptIntel() {
+            const encryptedDiv = document.getElementById('encryptedData');
+            encryptedDiv.textContent = 'Intelligence decrypted: Operation parameters confirmed. All units standby for further instructions.';
+            encryptedDiv.style.color = '#00ff88';
+            encryptedDiv.style.animation = 'none';
+        }
+
+        function runDiagnostic() {
+            const terminal = document.getElementById('opsTerminal');
+            terminal.innerHTML = '';
+            typeText(terminal, 'Running system diagnostic...\n');
+            setTimeout(() => typeText(terminal, 'Security protocols: ACTIVE\n'), 800);
+            setTimeout(() => typeText(terminal, 'Encryption modules: OPERATIONAL\n'), 1600);
+            setTimeout(() => typeText(terminal, 'Communication channels: SECURE\n'), 2400);
+            setTimeout(() => typeText(terminal, 'All systems nominal\n'), 3200);
+            showSection('operations');
+        }
+
+        function sendSecureMessage() {
+            const input = document.getElementById('messageInput');
+            const terminal = document.getElementById('commsTerminal');
+            if (input.value.trim()) {
+                typeText(terminal, 'TRANSMITTING: ' + input.value + '\n');
+                input.value = '';
+            }
+            showSection('comms');
+        }
+
+        function typeText(element, text) {
+            let i = 0;
+            const originalContent = element.innerHTML;
+            function typeChar() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(typeChar, 30);
+                }
+            }
+            element.innerHTML = originalContent;
+            typeChar();
+        }
+
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 15) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const commsTerminal = document.getElementById('commsTerminal');
+            typeText(commsTerminal, 'Secure channel initialized...\nAwaiting transmission...\n');
+            createParticles();
+        });
+    </script>
+</body>
+</html>
+              
