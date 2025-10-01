@@ -286,7 +286,32 @@ class AdminAuth {
         this.userManager = new UserManager();
         this.init();
     }
+// Add to UserManager class
+exportUsers() {
+    const users = this.getAllUsers();
+    const dataStr = JSON.stringify(users, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(dataBlob);
+    link.download = 'ci-users-backup.json';
+    link.click();
+}
 
+importUsers(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const users = JSON.parse(e.target.result);
+            localStorage.setItem(this.usersKey, JSON.stringify(users));
+            this.showMessage('Users imported successfully!', true);
+            this.loadUserList();
+        } catch (error) {
+            this.showMessage('Invalid backup file', false);
+        }
+    };
+    reader.readAsText(file);
+}
     // Update the login method to use UserManager
     login(username, password) {
         const user = this.userManager.authenticate(username, password);
