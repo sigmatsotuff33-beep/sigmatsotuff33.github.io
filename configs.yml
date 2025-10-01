@@ -1,1 +1,204 @@
+# Site Configuration
+title: "Counter Intelligence Documentary"
+subtitle: "doc iota aegis"
+description: "Secure documentation repository for counter-intelligence operations"
+baseurl: ""
+url: "https://yourusername.github.io"
+repository: "yourusername/your-repo-name"
 
+# Build Settings
+markdown: kramdown
+permalink: pretty
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+# Theme Settings (if using a theme)
+theme: jekyll-theme-cayman
+# or for custom styling:
+# theme: null
+
+# Custom Variables
+organization: "Counter Intelligence Unit"
+codename: "IOTA-AEGIS"
+security_level: "CLASSIFIED"
+version: "1.0.0"
+
+# Navigation
+header_pages:
+  - index.md
+  - overview.md
+  - operations.md
+  - intelligence.md
+  - tools.md
+  - communications.md
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+      toc: true
+      search: true
+  - scope:
+      path: "docs"
+      type: "pages"
+    values:
+      layout: "docs"
+      category: "documentation"
+
+# Navigation Structure
+nav:
+  - title: "Overview"
+    url: "/overview"
+    children:
+      - title: "Mission"
+        url: "/overview/mission"
+      - title: "Team Structure"
+        url: "/overview/team"
+      - title: "Protocols"
+        url: "/overview/protocols"
+  
+  - title: "Operations"
+    url: "/operations"
+    children:
+      - title: "Active Missions"
+        url: "/operations/active"
+      - title: "Archived Operations"
+        url: "/operations/archived"
+      - title: "Field Manuals"
+        url: "/operations/manuals"
+  
+  - title: "Intelligence"
+    url: "/intelligence"
+    children:
+      - title: "Current Threats"
+        url: "/intelligence/threats"
+      - title: "Analysis Reports"
+        url: "/intelligence/analysis"
+      - title: "Surveillance Data"
+        url: "/intelligence/surveillance"
+  
+  - title: "Tools"
+    url: "/tools"
+    children:
+      - title: "Software Suite"
+        url: "/tools/software"
+      - title: "Hardware Resources"
+        url: "/tools/hardware"
+      - title: "Technical Specifications"
+        url: "/tools/specs"
+  
+  - title: "Communications"
+    url: "/communications"
+    children:
+      - title: "Secure Channels"
+        url: "/communications/channels"
+      - title: "Encryption Protocols"
+        url: "/communications/encryption"
+      - title: "Emergency Procedures"
+        url: "/communications/emergency"
+
+# Security Settings
+security:
+  classification: "TOP SECRET"
+  access_level: "RESTRICTED"
+  encryption_required: true
+  audit_logging: true
+
+# Features
+features:
+  search: true
+  dark_mode: true
+  animations: true
+  terminal_interface: true
+  encryption_sim: true
+  system_diagnostics: true
+
+# Author Information
+author:
+  name: "Counter Intelligence Unit"
+  email: "secure@domain.classified"
+  description: "Authorized personnel only"
+
+# Social/Contact (Placeholder for operational security)
+social:
+  name: "Secure Communications"
+  links: []
+
+# Build optimization
+kramdown:
+  input: GFM
+  hard_wrap: false
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    css_class: 'highlight'
+    default_lang: 'text'
+
+sass:
+  style: compressed
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - .gitignore
+  - README.md
+  - package.json
+  - package-lock.json
+
+# Include specific directories
+include:
+  - _pages
+  - _docs
+  - assets
+  - images
+  - .well-known
+
+# Collections
+collections:
+  docs:
+    output: true
+    permalink: /:collection/:path/
+  manuals:
+    output: true
+    permalink: /manuals/:path/
+
+# SEO Settings
+seo:
+  name: "Counter Intelligence Documentary"
+  description: "Secure operational documentation"
+  links:
+    - "https://github.com/yourusername/your-repo"
+
+# Analytics (Optional - for operational metrics)
+analytics:
+  enabled: false
+  provider: "custom" # For security, avoid external analytics
+
+# Custom Head Includes
+head_includes:
+  - <meta name="classification" content="TOP SECRET">
+  - <meta name="robots" content="noindex, nofollow">
+  - <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  - <meta http-equiv="X-Frame-Options" content="DENY">
+
+# Footer Information
+footer:
+  copyright: "CLASSIFIED - For authorized use only"
+  security_notice: "All access monitored and logged"
+  version: "v1.0.0"
+
+# Emergency Protocols
+emergency:
+  contact: "REDACTED"
+  shutdown_protocol: "AUTO-ENGAGE"
+  data_wipe: "ENABLED"
