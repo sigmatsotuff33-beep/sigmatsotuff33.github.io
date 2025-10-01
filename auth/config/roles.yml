@@ -1,0 +1,49 @@
+roles:
+  owner:
+    level: 100
+    permissions:
+      - system.*
+      - user.*
+      - content.*
+      - config.*
+      - audit.*
+    inherits: [admin, moderator]
+  
+  co_owner:
+    level: 90
+    permissions:
+      - system.manage
+      - user.manage
+      - content.manage
+      - config.view
+    inherits: [admin, moderator]
+  
+  admin:
+    level: 80
+    permissions:
+      - user.ban
+      - user.warn
+      - content.delete
+      - content.edit
+      - mod.manage
+    inherits: [moderator]
+  
+  moderator:
+    level: 50
+    permissions:
+      - content.delete
+      - content.edit
+      - user.warn
+      - chat.manage
+  
+  member:
+    level: 10
+    permissions:
+      - content.create
+      - content.view
+      - chat.join
+  
+  guest:
+    level: 1
+    permissions:
+      - content.view
