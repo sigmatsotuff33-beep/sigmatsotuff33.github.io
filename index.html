@@ -1,1 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counter Intelligence Documentary</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a0a;
+            color: #00ff00;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #111;
+            padding: 20px;
+            border-bottom: 1px solid #00ff00;
+        }
+        h1 {
+            margin: 0;
+            text-align: center;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            text-align: center;
+            color: #ccc;
+            margin-top: 10px;
+        }
+        nav {
+            margin: 20px 0;
+            text-align: center;
+        }
+        nav button {
+            background-color: #222;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        nav button:hover {
+            background-color: #00ff00;
+            color: #000;
+        }
+        .content {
+            display: none;
+            padding: 20px;
+            background-color: #111;
+            border: 1px solid #333;
+            margin-top: 20px;
+        }
+        .active {
+            display: block;
+        }
+        .terminal {
+            background-color: #000;
+            border: 1px solid #00ff00;
+            padding: 15px;
+            font-family: monospace;
+            height: 200px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .card {
+            background-color: #111;
+            border: 1px solid #333;
+            padding: 15px;
+            transition: all 0.3s;
+        }
+        .card:hover {
+            border-color: #00ff00;
+        }
+        .encrypted {
+            font-family: monospace;
+            background-color: #000;
+            padding: 10px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Counter Intelligence Documentary</h1>
+            <div class="subtitle">doc iota aegis</div>
+        </div>
+    </header>
 
+    <div class="container">
+        <nav>
+            <button onclick="showSection('overview')">Overview</button>
+            <button onclick="showSection('operations')">Operations</button>
+            <button onclick="showSection('intel')">Intelligence</button>
+            <button onclick="showSection('tools')">Tools</button>
+            <button onclick="showSection('comms')">Communications</button>
+            <button onclick="initiateSecureProtocol()">Secure Protocol</button>
+            <button onclick="encryptData()">Encrypt Data</button>
+            <button onclick="runDiagnostic()">System Diagnostic</button>
+        </nav>
+
+        <div id="overview" class="content active">
+            <h2>Operational Overview</h2>
+            <p>Documentation and intelligence repository for ongoing counter-intelligence operations.</p>
+            <div class="grid">
+                <div class="card">
+                    <h3>Mission Statement</h3>
+                    <p>Primary objectives and operational parameters.</p>
+                </div>
+                <div class="card">
+                    <h3>Team Structure</h3>
+                    <p>Operational hierarchy and team composition.</p>
+                </div>
+                <div class="card">
+                    <h3>Protocols</h3>
+                    <p>Standard operating procedures and emergency protocols.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="operations" class="content">
+            <h2>Active Operations</h2>
+            <p>Current field operations and mission status.</p>
+            <div class="terminal" id="opsTerminal"></div>
+        </div>
+
+        <div id="intel" class="content">
+            <h2>Intelligence Database</h2>
+            <p>Classified intelligence and analysis reports.</p>
+            <div class="encrypted" id="encryptedData">[ENCRYPTED DATA STREAM]</div>
+            <button onclick="decryptIntel()">Decrypt Intelligence</button>
+        </div>
+
+        <div id="tools" class="content">
+            <h2>Operational Tools</h2>
+            <p>Authorized software and hardware resources.</p>
+            <div class="grid">
+                <div class="card">
+                    <h3>Surveillance Suite</h3>
+                    <p>Monitoring and tracking utilities.</p>
+                </div>
+                <div class="card">
+                    <h3>Analysis Tools</h3>
+                    <p>Data processing and pattern recognition.</p>
+                </div>
+                <div class="card">
+                    <h3>Communication</h3>
+                    <p>Secure channels and encryption systems.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="comms" class="content">
+            <h2>Secure Communications</h2>
+            <p>Encrypted messaging and data transfer protocols.</p>
+            <div class="terminal" id="commsTerminal"></div>
+            <input type="text" id="messageInput" placeholder="Enter secure message">
+            <button onclick="sendSecureMessage()">Transmit</button>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            document.querySelectorAll('.content').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        function initiateSecureProtocol() {
+            const terminal = document.getElementById('opsTerminal');
+            terminal.innerHTML = '';
+            typeText(terminal, 'Initiating secure protocol...\n');
+            setTimeout(() => typeText(terminal, 'Establishing encrypted connection...\n'), 1000);
+            setTimeout(() => typeText(terminal, 'Authentication verified...\n'), 2000);
+            setTimeout(() => typeText(terminal, 'Secure channel established...\n'), 3000);
+            setTimeout(() => typeText(terminal, 'Protocol IOTA-AEGIS active...\n'), 4000);
+            showSection('operations');
+        }
+
+        function encryptData() {
+            const encryptedDiv = document.getElementById('encryptedData');
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let newEncryption = '';
+            for (let i = 0; i < 64; i++) {
+                newEncryption += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            encryptedDiv.textContent = newEncryption;
+            showSection('intel');
+        }
+
+        function decryptIntel() {
+            const encryptedDiv = document.getElementById('encryptedData');
+            encryptedDiv.textContent = 'Intelligence decrypted: Operation parameters confirmed. All units standby for further instructions.';
+            encryptedDiv.style.color = '#00ff00';
+        }
+
+        function runDiagnostic() {
+            const terminal = document.getElementById('opsTerminal');
+            terminal.innerHTML = '';
+            typeText(terminal, 'Running system diagnostic...\n');
+            setTimeout(() => typeText(terminal, 'Security protocols: ACTIVE\n'), 800);
+            setTimeout(() => typeText(terminal, 'Encryption modules: OPERATIONAL\n'), 1600);
+            setTimeout(() => typeText(terminal, 'Communication channels: SECURE\n'), 2400);
+            setTimeout(() => typeText(terminal, 'All systems nominal\n'), 3200);
+            showSection('operations');
+        }
+
+        function sendSecureMessage() {
+            const input = document.getElementById('messageInput');
+            const terminal = document.getElementById('commsTerminal');
+            if (input.value.trim()) {
+                typeText(terminal, 'TRANSMITTING: ' + input.value + '\n');
+                input.value = '';
+            }
+            showSection('comms');
+        }
+
+        function typeText(element, text) {
+            let i = 0;
+            const originalContent = element.innerHTML;
+            function typeChar() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(typeChar, 50);
+                }
+            }
+            element.innerHTML = originalContent;
+            typeChar();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const commsTerminal = document.getElementById('commsTerminal');
+            typeText(commsTerminal, 'Secure channel initialized...\nAwaiting transmission...\n');
+        });
+    </script>
+</body>
+</html>
