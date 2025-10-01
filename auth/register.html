@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Registration - Counter Intelligence</title>
+    <link rel="stylesheet" href="styles/admin.css">
+</head>
+<body class="admin-login">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>🔐 Complete Registration</h1>
+                <p id="inviteDescription">You've been invited to join the team</p>
+            </div>
+            
+            <form id="completeRegistrationForm" class="login-form">
+                <input type="hidden" id="invitationToken" name="invitationToken">
+                
+                <div class="invite-info" id="inviteInfo">
+                    <!-- Dynamically filled with invitation details -->
+                </div>
+
+                <div class="input-group">
+                    <label for="username">Choose Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Create Password</label>
+                    <input type="password" id="password" name="password" required minlength="10">
+                    <small>Minimum 10 characters with mixed case, numbers, and symbols</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="passwordConfirm">Confirm Password</label>
+                    <input type="password" id="passwordConfirm" name="passwordConfirm" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="mfaChoice">Two-Factor Authentication</label>
+                    <select id="mfaChoice" name="mfaChoice" required>
+                        <option value="authenticator">Authenticator App (Recommended)</option>
+                        <option value="sms">SMS</option>
+                        <option value="email">Email</option>
+                    </select>
+                </div>
+
+                <div class="security-agreement">
+                    <input type="checkbox" id="agreeTerms" required>
+                    <label for="agreeTerms">I agree to the security protocols and confidentiality agreement</label>
+                </div>
+
+                <button type="submit" class="login-btn">Complete Registration & Sign Security Agreement</button>
+            </form>
+
+            <div class="security-notice">
+                <p>🔒 All access is monitored and logged for security purposes</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/registration-handler.js"></script>
+</body>
+</html>
