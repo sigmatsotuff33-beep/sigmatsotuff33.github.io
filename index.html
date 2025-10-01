@@ -921,3 +921,8 @@
     </script>
 </body>
 </html>
+<button onclick="userManager.showUserPanel()">👥 Manage Users</button>
+<button onclick="userManager.exportUsers()">💾 Export Users</button>
+<button onclick="document.getElementById('importUsers').click()">📥 Import Users
+    <input type="file" id="importUsers" accept=".json" style="display: none;" onchange="userManager.importUsers(this.files[0])">
+</button>
