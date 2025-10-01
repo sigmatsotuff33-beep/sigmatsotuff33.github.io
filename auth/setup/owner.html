@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Initial System Setup - Counter Intelligence</title>
+    <link rel="stylesheet" href="../styles/admin.css">
+</head>
+<body class="admin-login">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>🚀 Initial System Setup</h1>
+                <p>Create Founder/Owner Account</p>
+            </div>
+            
+            <form id="initialSetupForm" class="login-form">
+                <div class="input-group">
+                    <label for="founderName">Founder Name</label>
+                    <input type="text" id="founderName" name="founderName" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="founderEmail">Secure Email</label>
+                    <input type="email" id="founderEmail" name="founderEmail" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="founderPassword">Master Password</label>
+                    <input type="password" id="founderPassword" name="founderPassword" required minlength="12">
+                    <small>Minimum 12 characters with numbers and symbols</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="founderPasswordConfirm">Confirm Password</label>
+                    <input type="password" id="founderPasswordConfirm" name="founderPasswordConfirm" required>
+                </div>
+
+                <div class="security-check">
+                    <input type="checkbox" id="understandRisk" required>
+                    <label for="understandRisk">I understand this creates permanent owner access with full system control</label>
+                </div>
+
+                <button type="submit" class="login-btn">Initialize System & Create Owner Account</button>
+            </form>
+
+            <div class="security-notice">
+                <p>⚠️ This setup can only be performed once. Store credentials securely.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../scripts/initial-setup.js"></script>
+</body>
+</html>
