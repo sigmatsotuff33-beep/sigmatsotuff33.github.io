@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invite User - Counter Intelligence</title>
+    <link rel="stylesheet" href="styles/admin.css">
+</head>
+<body class="admin-dashboard">
+    <div id="adminHeader"></div>
+    
+    <div class="admin-layout">
+        <div id="adminSidebar"></div>
+        
+        <main class="admin-main">
+            <div class="view active">
+                <div class="view-header">
+                    <h2>Invite New Member</h2>
+                    <button onclick="window.history.back()" class="btn-secondary">← Back</button>
+                </div>
+
+                <div class="invite-form-container">
+                    <form id="inviteUserForm" class="invite-form">
+                        <div class="input-group">
+                            <label for="inviteeName">Full Name</label>
+                            <input type="text" id="inviteeName" name="inviteeName" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="inviteeEmail">Email Address</label>
+                            <input type="email" id="inviteeEmail" name="inviteeEmail" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="userRole">Role</label>
+                            <select id="userRole" name="userRole" required>
+                                <option value="">Select Role</option>
+                                <option value="co_owner">Co-Owner</option>
+                                <option value="admin">Administrator</option>
+                                <option value="moderator">Moderator</option>
+                                <option value="member">Member</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="accessLevel">Access Level</label>
+                            <select id="accessLevel" name="accessLevel" required>
+                                <option value="confidential">Confidential</option>
+                                <option value="secret">Secret</option>
+                                <option value="top_secret">Top Secret</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="invitationMessage">Personal Message (Optional)</label>
+                            <textarea id="invitationMessage" name="invitationMessage" rows="4"></textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">Send Invitation</button>
+                            <button type="button" onclick="generateSecureLink()" class="btn-secondary">Generate Secure Link</button>
+                        </div>
+                    </form>
+
+                    <div class="invite-preview" id="invitePreview" style="display: none;">
+                        <h3>Secure Invitation Link Generated</h3>
+                        <div class="secure-link">
+                            <code id="generatedLink">https://your-site.com/register?token=XXXXX</code>
+                            <button onclick="copyInviteLink()" class="btn-sm">Copy</button>
+                        </div>
+                        <p class="expiry-note">⏰ This link expires in 72 hours</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="scripts/invitation-system.js"></script>
+</body>
+</html>
