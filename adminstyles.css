@@ -1,0 +1,66 @@
+.admin-panel {
+    position: fixed;
+    top: 60px;
+    right: 20px;
+    background: #1a1a1a;
+    border: 2px solid #00ff88;
+    border-radius: 10px;
+    padding: 15px;
+    z-index: 1000;
+    min-width: 200px;
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #333;
+}
+
+.admin-header h4 {
+    margin: 0;
+    color: #00ff88;
+}
+
+.user-role {
+    background: #00ff88;
+    color: black;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.logout-btn {
+    background: #ff4444;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.admin-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.admin-controls button {
+    background: #2a2a2a;
+    color: #00ff88;
+    border: 1px solid #00ff88;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.admin-controls button:hover {
+    background: #00ff88;
+    color: black;
+}
