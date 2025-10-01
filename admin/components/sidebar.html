@@ -1,0 +1,163 @@
+<aside class="admin-sidebar">
+    <div class="sidebar-header">
+        <h3>Control Panel</h3>
+        <div class="user-info">
+            <span id="sidebarUserName">Admin</span>
+            <span class="user-role" id="sidebarUserRole">Owner</span>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <div class="nav-section">
+            <h4>Content</h4>
+            <a href="#" data-view="dashboardView" class="nav-item active">
+                <span class="nav-icon">📊</span>
+                Dashboard
+            </a>
+            <a href="#" data-view="pagesView" class="nav-item">
+                <span class="nav-icon">📄</span>
+                Pages
+            </a>
+            <a href="#" data-view="filesView" class="nav-item">
+                <span class="nav-icon">📁</span>
+                Files
+            </a>
+            <a href="#" data-view="linksView" class="nav-item">
+                <span class="nav-icon">🔗</span>
+                Links
+            </a>
+        </div>
+
+        <div class="nav-section">
+            <h4>Management</h4>
+            <a href="#" data-view="usersView" class="nav-item">
+                <span class="nav-icon">👥</span>
+                Users
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">⚙️</span>
+                Settings
+            </a>
+        </div>
+
+        <div class="nav-section">
+            <h4>Security</h4>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">📋</span>
+                Audit Log
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">🔐</span>
+                Access Control
+            </a>
+        </div>
+    </nav>
+
+    <div class="sidebar-footer">
+        <button onclick="adminCore.logout()" class="logout-btn">
+            <span class="nav-icon">🚪</span>
+            Logout
+        </button>
+    </div>
+</aside>
+
+<style>
+.admin-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 280px;
+    height: 100vh;
+    background: var(--admin-dark);
+    color: white;
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-header {
+    padding: 0 20px 20px;
+    border-bottom: 1px solid #334155;
+    margin-bottom: 20px;
+}
+
+.sidebar-header h3 {
+    color: white;
+    margin-bottom: 10px;
+}
+
+.user-info {
+    font-size: 14px;
+}
+
+.user-role {
+    background: var(--admin-primary);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    margin-left: 8px;
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 0 20px;
+}
+
+.nav-section {
+    margin-bottom: 30px;
+}
+
+.nav-section h4 {
+    color: #94a3b8;
+    font-size: 12px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding-left: 12px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    color: #cbd5e1;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    transition: all 0.3s ease;
+}
+
+.nav-item:hover, .nav-item.active {
+    background: var(--admin-primary);
+    color: white;
+}
+
+.nav-icon {
+    margin-right: 12px;
+    font-size: 16px;
+}
+
+.sidebar-footer {
+    padding: 20px;
+    border-top: 1px solid #334155;
+}
+
+.logout-btn {
+    width: 100%;
+    background: transparent;
+    border: 1px solid #475569;
+    color: #cbd5e1;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+    background: var(--admin-accent);
+    border-color: var(--admin-accent);
+    color: white;
+}
+</style>
