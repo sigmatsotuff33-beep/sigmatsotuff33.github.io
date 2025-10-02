@@ -1,332 +1,295 @@
-
-class UserManager {
+class SecurityMonitor {
     constructor() {
-        this.usersKey = 'ci_users_database';
-        this.initializeDefaultUsers();
+        this.logsKey = 'ci_security_logs';
+        this.maxLogs = 1000;
+        this.init();
     }
 
-    initializeDefaultUsers() {
-        if (!localStorage.getItem(this.usersKey)) {
-            const defaultUsers = {
-                'owner': {
-                    password: 'CI_Owner_2024!',
-                    role: 'owner',
-                    email: 'owner@ci-unit.classified',
-                    created: new Date().toISOString(),
-                    active: true
-                },
-                'co_owner': {
-                    password: 'CI_CoOwner_2024!', 
-                    role: 'co_owner',
-                    email: 'coowner@ci-unit.classified',
-                    created: new Date().toISOString(),
-                    active: true
-                },
-                'admin': {
-                    password: 'CI_Admin_2024!',
-                    role: 'admin',
-                    email: 'admin@ci-unit.classified', 
-                    created: new Date().toISOString(),
-                    active: true
-                }
-            };
-            localStorage.setItem(this.usersKey, JSON.stringify(defaultUsers));
+    init() {
+        this.logVisitor();
+        this.setupLoginMonitoring();
+    }
+
+    logVisitor() {
+        const visitorInfo = this.collectVisitorData();
+        this.saveLog(visitorInfo);
+        this.displaySecurityAlert(visitorInfo);
+    }
+
+    collectVisitorData() {
+        const visitorData = {
+            timestamp: new Date().toISOString(),
+            userAgent: navigator.userAgent,
+            platform: navigator.platform,
+            language: navigator.language,
+            cookiesEnabled: navigator.cookieEnabled,
+            javaEnabled: navigator.javaEnabled ? navigator.javaEnabled() : false,
+            screen: {
+                width: screen.width,
+                height: screen.height,
+                colorDepth: screen.colorDepth
+            },
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            connection: this.getConnectionInfo(),
+            plugins: this.getPluginsInfo(),
+            referrer: document.referrer || 'Direct visit',
+            url: window.location.href,
+            ip: 'Collecting...'
+        };
+
+        this.getIPAddress().then(ip => {
+            visitorData.ip = ip;
+            this.updateLogWithIP(visitorData);
+        });
+
+        return visitorData;
+    }
+
+    getIPAddress() {
+        return fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => data.ip)
+            .catch(() => 'Unknown');
+    }
+
+    updateLogWithIP(visitorData) {
+        const logs = this.getLogs();
+        const recentLog = logs[0];
+        if (recentLog && recentLog.timestamp === visitorData.timestamp) {
+            recentLog.ip = visitorData.ip;
+            this.saveLogs(logs);
         }
     }
 
-    getAllUsers() {
-        return JSON.parse(localStorage.getItem(this.usersKey) || '{}');
-    }
-
-    saveAllUsers(users) {
-        localStorage.setItem(this.usersKey, JSON.stringify(users));
-    }
-
-    authenticate(username, password) {
-        const users = this.getAllUsers();
-        const user = users[username];
-        
-        if (user && user.password === password && user.active) {
+    getConnectionInfo() {
+        const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        if (connection) {
             return {
-                username: username,
-                role: user.role,
-                email: user.email,
-                loginTime: new Date().toISOString()
+                effectiveType: connection.effectiveType,
+                downlink: connection.downlink,
+                rtt: connection.rtt
             };
         }
-        return null;
+        return 'Connection API not supported';
     }
 
-    createUser(userData) {
-        const users = this.getAllUsers();
-        
-        if (users[userData.username]) {
-            return { success: false, error: 'Username already exists' };
-        }
-
-        users[userData.username] = {
-            password: userData.password,
-            role: userData.role,
-            email: userData.email,
-            created: new Date().toISOString(),
-            createdBy: adminAuth.currentUser.username,
-            active: true
-        };
-
-        this.saveAllUsers(users);
-        return { success: true, user: userData };
-    }
-
-    updateUser(username, updates) {
-        const users = this.getAllUsers();
-        
-        if (!users[username]) {
-            return { success: false, error: 'User not found' };
-        }
-
-        // Don't allow changing your own role
-        if (username === adminAuth.currentUser?.username && updates.role) {
-            return { success: false, error: 'Cannot change your own role' };
-        }
-
-        Object.assign(users[username], updates);
-        this.saveAllUsers(users);
-        return { success: true };
-    }
-
-    deleteUser(username) {
-        const users = this.getAllUsers();
-        
-        if (username === adminAuth.currentUser?.username) {
-            return { success: false, error: 'Cannot delete your own account' };
-        }
-
-        if (users[username]) {
-            delete users[username];
-            this.saveAllUsers(users);
-            return { success: true };
-        }
-        
-        return { success: false, error: 'User not found' };
-    }
-
-    changePassword(username, newPassword) {
-        const users = this.getAllUsers();
-        
-        if (users[username]) {
-            users[username].password = newPassword;
-            users[username].lastPasswordChange = new Date().toISOString();
-            this.saveAllUsers(users);
-            return { success: true };
-        }
-        
-        return { success: false, error: 'User not found' };
-    }
-
-    showUserPanel() {
-        const modal = document.createElement('div');
-        modal.innerHTML = `
-            <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; display: flex; align-items: center; justify-content: center;">
-                <div style="background: #1a1a1a; padding: 30px; border-radius: 15px; max-width: 900px; width: 95%; max-height: 90vh; overflow-y: auto; border: 2px solid var(--primary);">
-                    <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 20px;">
-                        <h3 style="color: var(--primary); margin: 0;">👥 User Management</h3>
-                        <button onclick="this.closest('div[style*=\"position: fixed\"]').remove()" style="background: #ff4444; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">Close</button>
-                    </div>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <!-- User List -->
-                        <div>
-                            <h4 style="color: var(--primary); margin-bottom: 15px;">Current Users</h4>
-                            <div id="userList" style="background: #2a2a2a; border-radius: 10px; padding: 15px; max-height: 400px; overflow-y: auto;">
-                                <!-- Users will be loaded here -->
-                            </div>
-                        </div>
-                        
-                        <!-- Add User Form -->
-                        <div>
-                            <h4 style="color: var(--primary); margin-bottom: 15px;">Add New User</h4>
-                            <form id="addUserForm" style="background: #2a2a2a; border-radius: 10px; padding: 20px;">
-                                <div style="margin-bottom: 15px;">
-                                    <label style="display: block; color: var(--primary); margin-bottom: 5px;">Username</label>
-                                    <input type="text" id="newUsername" required style="width: 100%; padding: 10px; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 5px;">
-                                </div>
-                                
-                                <div style="margin-bottom: 15px;">
-                                    <label style="display: block; color: var(--primary); margin-bottom: 5px;">Password</label>
-                                    <input type="password" id="newPassword" required style="width: 100%; padding: 10px; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 5px;">
-                                </div>
-                                
-                                <div style="margin-bottom: 15px;">
-                                    <label style="display: block; color: var(--primary); margin-bottom: 5px;">Email</label>
-                                    <input type="email" id="newEmail" style="width: 100%; padding: 10px; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 5px;">
-                                </div>
-                                
-                                <div style="margin-bottom: 20px;">
-                                    <label style="display: block; color: var(--primary); margin-bottom: 5px;">Role</label>
-                                    <select id="newRole" required style="width: 100%; padding: 10px; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 5px;">
-                                        <option value="member">Member</option>
-                                        <option value="moderator">Moderator</option>
-                                        <option value="admin">Admin</option>
-                                        ${adminAuth.currentUser.role === 'owner' ? '<option value="co_owner">Co-Owner</option>' : ''}
-                                    </select>
-                                </div>
-                                
-                                <button type="submit" style="width: 100%; padding: 12px; background: var(--primary); color: black; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Create User</button>
-                            </form>
-                        </div>
-                    </div>
-                    
-                    <div id="userManagementMessage" style="margin-top: 15px; padding: 10px; border-radius: 5px; display: none;"></div>
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(modal);
-        this.loadUserList();
-        this.setupUserForm();
-    }
-
-    loadUserList() {
-        const users = this.getAllUsers();
-        const userList = document.getElementById('userList');
-        
-        userList.innerHTML = Object.entries(users).map(([username, user]) => `
-            <div style="background: #1a1a1a; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #333;">
-                <div style="display: flex; justify-content: between; align-items: start; margin-bottom: 10px;">
-                    <div>
-                        <strong style="color: var(--primary);">${username}</strong>
-                        <span style="background: ${this.getRoleColor(user.role)}; color: black; padding: 2px 8px; border-radius: 10px; font-size: 12px; margin-left: 10px;">${user.role}</span>
-                    </div>
-                    <div>
-                        ${username !== adminAuth.currentUser.username ? `
-                            <button onclick="userManager.editUser('${username}')" style="background: var(--primary); color: black; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 12px; margin-right: 5px;">Edit</button>
-                            <button onclick="userManager.deleteUserPrompt('${username}')" style="background: #ff4444; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 12px;">Delete</button>
-                        ` : '<span style="color: var(--primary); font-size: 12px;">Current User</span>'}
-                    </div>
-                </div>
-                <div style="font-size: 12px; color: #ccc;">
-                    <div>Email: ${user.email || 'N/A'}</div>
-                    <div>Created: ${new Date(user.created).toLocaleDateString()}</div>
-                    <div>Status: <span style="color: ${user.active ? '#00ff88' : '#ff4444'}">${user.active ? 'Active' : 'Inactive'}</span></div>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    getRoleColor(role) {
-        const colors = {
-            'owner': '#ff4444',
-            'co_owner': '#ffaa00', 
-            'admin': '#00ff88',
-            'moderator': '#0088ff',
-            'member': '#888888'
-        };
-        return colors[role] || '#888888';
-    }
-
-    setupUserForm() {
-        document.getElementById('addUserForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const userData = {
-                username: document.getElementById('newUsername').value,
-                password: document.getElementById('newPassword').value,
-                email: document.getElementById('newEmail').value,
-                role: document.getElementById('newRole').value
-            };
-
-            const result = this.createUser(userData);
-            this.showMessage(result.success ? 'User created successfully!' : result.error, result.success);
-            
-            if (result.success) {
-                document.getElementById('addUserForm').reset();
-                this.loadUserList();
+    getPluginsInfo() {
+        const plugins = [];
+        if (navigator.plugins) {
+            for (let i = 0; i < navigator.plugins.length; i++) {
+                plugins.push(navigator.plugins[i].name);
             }
+        }
+        return plugins;
+    }
+
+    saveLog(visitorInfo) {
+        const logs = this.getLogs();
+        logs.unshift(visitorInfo);
+        
+        if (logs.length > this.maxLogs) {
+            logs.splice(this.maxLogs);
+        }
+        
+        localStorage.setItem(this.logsKey, JSON.stringify(logs));
+    }
+
+    getLogs() {
+        return JSON.parse(localStorage.getItem(this.logsKey) || '[]');
+    }
+
+    saveLogs(logs) {
+        localStorage.setItem(this.logsKey, JSON.stringify(logs));
+    }
+
+    displaySecurityAlert(visitorInfo) {
+        const terminal = document.getElementById('opsTerminal');
+        if (terminal) {
+            const alertMessage = `
+🚨 SECURITY ALERT 🚨
+New visitor detected:
+• Time: ${new Date(visitorInfo.timestamp).toLocaleString()}
+• IP: ${visitorInfo.ip}
+• OS: ${this.parseOS(visitorInfo.userAgent)}
+• Browser: ${this.parseBrowser(visitorInfo.userAgent)}
+• Platform: ${visitorInfo.platform}
+• Language: ${visitorInfo.language}
+• Screen: ${visitorInfo.screen.width}x${visitorInfo.screen.height}
+• Timezone: ${visitorInfo.timezone}
+• Referrer: ${visitorInfo.referrer}
+• URL: ${visitorInfo.url}
+
+            `;
+            typeText(terminal, alertMessage + '\n');
+        }
+    }
+
+    setupLoginMonitoring() {
+        const originalLogin = adminAuth.login;
+        adminAuth.login = (username, password) => {
+            const result = originalLogin.call(adminAuth, username, password);
+            if (result) {
+                this.logUserLogin(username);
+            }
+            return result;
+        };
+    }
+
+    logUserLogin(username) {
+        const users = userManager.getAllUsers();
+        const user = users[username];
+        const loginInfo = {
+            type: 'USER_LOGIN',
+            timestamp: new Date().toISOString(),
+            username: username,
+            email: user ? user.email : 'Unknown',
+            userAgent: navigator.userAgent,
+            os: this.parseOS(navigator.userAgent),
+            browser: this.parseBrowser(navigator.userAgent),
+            ip: 'Collecting...'
+        };
+
+        this.getIPAddress().then(ip => {
+            loginInfo.ip = ip;
+            this.saveLog(loginInfo);
+            this.displayLoginAlert(loginInfo);
         });
     }
 
-    editUser(username) {
-        const users = this.getAllUsers();
-        const user = users[username];
+    displayLoginAlert(loginInfo) {
+        const terminal = document.getElementById('opsTerminal');
+        if (terminal) {
+            const loginMessage = `
+🔐 USER LOGIN DETECTED 🔐
+User authentication:
+• Time: ${new Date(loginInfo.timestamp).toLocaleString()}
+• Username: ${loginInfo.username}
+• Email: ${loginInfo.email}
+• IP: ${loginInfo.ip}
+• OS: ${loginInfo.os}
+• Browser: ${loginInfo.browser}
+• User Agent: ${loginInfo.userAgent}
+
+            `;
+            typeText(terminal, loginMessage + '\n');
+        }
+    }
+
+    parseOS(userAgent) {
+        if (userAgent.includes('Windows NT 10.0')) return 'Windows 10/11';
+        if (userAgent.includes('Windows NT 6.3')) return 'Windows 8.1';
+        if (userAgent.includes('Windows NT 6.2')) return 'Windows 8';
+        if (userAgent.includes('Windows NT 6.1')) return 'Windows 7';
+        if (userAgent.includes('Windows')) return 'Windows';
+        if (userAgent.includes('Mac')) return 'MacOS';
+        if (userAgent.includes('Linux')) return 'Linux';
+        if (userAgent.includes('Android')) return 'Android';
+        if (userAgent.includes('iOS') || userAgent.includes('iPhone')) return 'iOS';
+        return 'Unknown OS';
+    }
+
+    parseBrowser(userAgent) {
+        if (userAgent.includes('Chrome')) return 'Chrome';
+        if (userAgent.includes('Firefox')) return 'Firefox';
+        if (userAgent.includes('Safari') && !userAgent.includes('Chrome')) return 'Safari';
+        if (userAgent.includes('Edge')) return 'Edge';
+        if (userAgent.includes('Opera')) return 'Opera';
+        return 'Unknown Browser';
+    }
+
+    showSecurityLogs() {
+        const logs = this.getLogs();
+        const modal = document.createElement('div');
+        modal.innerHTML = `
+            <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; display: flex; align-items: center; justify-content: center;">
+                <div style="background: #1a1a1a; padding: 30px; border-radius: 15px; max-width: 90%; max-height: 90vh; overflow-y: auto; border: 2px solid var(--primary);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="color: var(--primary); margin: 0;">🛡️ Security Logs</h3>
+                        <button onclick="this.closest('div[style*=\"position: fixed\"]').remove()" style="background: #ff4444; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">Close</button>
+                    </div>
+                    <div style="margin-bottom: 20px; display: flex; gap: 10px;">
+                        <button onclick="securityMonitor.exportLogs()" style="padding: 10px 15px; background: var(--primary); color: black; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">💾 Export Logs</button>
+                        <button onclick="securityMonitor.clearLogs()" style="padding: 10px 15px; background: #ff4444; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">🗑️ Clear Logs</button>
+                    </div>
+                    <div id="securityLogsList" style="background: #2a2a2a; border-radius: 10px; padding: 15px; max-height: 60vh; overflow-y: auto;">
+                        ${logs.map(log => this.formatLogEntry(log)).join('')}
+                    </div>
+                    <div style="margin-top: 15px; color: #ccc; font-size: 12px;">
+                        Total logs: ${logs.length} | Max stored: ${this.maxLogs}
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+
+    formatLogEntry(log) {
+        const isLogin = log.type === 'USER_LOGIN';
+        const bgColor = isLogin ? 'rgba(0, 255, 136, 0.1)' : 'rgba(0, 136, 255, 0.1)';
+        const borderColor = isLogin ? '#00ff88' : '#0088ff';
         
-        const newRole = prompt(`Change role for ${username}:`, user.role);
-        if (newRole && ['member', 'moderator', 'admin', 'co_owner'].includes(newRole)) {
-            const result = this.updateUser(username, { role: newRole });
-            this.showMessage(result.success ? 'User updated!' : result.error, result.success);
-            if (result.success) this.loadUserList();
-        }
+        return `
+            <div style="background: ${bgColor}; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid ${borderColor};">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                    <div>
+                        <strong style="color: ${isLogin ? '#00ff88' : '#0088ff'};">${isLogin ? '🔐 LOGIN' : '👤 VISITOR'}</strong>
+                        <span style="background: #333; color: white; padding: 2px 8px; border-radius: 10px; font-size: 11px; margin-left: 10px;">${new Date(log.timestamp).toLocaleString()}</span>
+                    </div>
+                </div>
+                <div style="font-size: 12px; color: #ccc;">
+                    ${isLogin ? `
+                        <div><strong>User:</strong> ${log.username} (${log.email})</div>
+                    ` : ''}
+                    <div><strong>IP:</strong> ${log.ip || 'Unknown'}</div>
+                    <div><strong>OS:</strong> ${log.os || this.parseOS(log.userAgent)}</div>
+                    <div><strong>Browser:</strong> ${log.browser || this.parseBrowser(log.userAgent)}</div>
+                    <div><strong>Platform:</strong> ${log.platform || 'Unknown'}</div>
+                    ${isLogin ? '' : `<div><strong>Referrer:</strong> ${log.referrer || 'Direct'}</div>`}
+                </div>
+            </div>
+        `;
     }
 
-    deleteUserPrompt(username) {
-        if (confirm(`Are you sure you want to delete user "${username}"? This cannot be undone.`)) {
-            const result = this.deleteUser(username);
-            this.showMessage(result.success ? 'User deleted!' : result.error, result.success);
-            if (result.success) this.loadUserList();
-        }
-    }
-
-    showMessage(message, isSuccess = true) {
-        const messageDiv = document.getElementById('userManagementMessage');
-        messageDiv.textContent = message;
-        messageDiv.style.background = isSuccess ? 'rgba(0, 255, 136, 0.2)' : 'rgba(255, 68, 68, 0.2)';
-        messageDiv.style.color = isSuccess ? '#00ff88' : '#ff4444';
-        messageDiv.style.border = `1px solid ${isSuccess ? '#00ff88' : '#ff4444'}`;
-        messageDiv.style.display = 'block';
+    exportLogs() {
+        const logs = this.getLogs();
+        const dataStr = JSON.stringify(logs, null, 2);
+        const dataBlob = new Blob([dataStr], {type: 'application/json'});
         
-        setTimeout(() => {
-            messageDiv.style.display = 'none';
-        }, 5000);
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(dataBlob);
+        link.download = `ci-security-logs-${new Date().toISOString().split('T')[0]}.json`;
+        link.click();
     }
-}
 
-// Update your AdminAuth class to use the UserManager
-class AdminAuth {
-    constructor() {
-        this.currentUser = null;
-        this.userManager = new UserManager();
-        this.init();
-    }
-// Add to UserManager class
-exportUsers() {
-    const users = this.getAllUsers();
-    const dataStr = JSON.stringify(users, null, 2);
-    const dataBlob = new Blob([dataStr], {type: 'application/json'});
-    
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(dataBlob);
-    link.download = 'ci-users-backup.json';
-    link.click();
-}
-
-importUsers(file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        try {
-            const users = JSON.parse(e.target.result);
-            localStorage.setItem(this.usersKey, JSON.stringify(users));
-            this.showMessage('Users imported successfully!', true);
-            this.loadUserList();
-        } catch (error) {
-            this.showMessage('Invalid backup file', false);
+    clearLogs() {
+        if (confirm('Are you sure you want to clear all security logs? This cannot be undone.')) {
+            localStorage.removeItem(this.logsKey);
+            document.querySelector('div[style*="position: fixed"]').remove();
+            this.showSecurityLogs();
         }
-    };
-    reader.readAsText(file);
-}
-    // Update the login method to use UserManager
-    login(username, password) {
-        const user = this.userManager.authenticate(username, password);
-        if (user) {
-            this.currentUser = user;
-            localStorage.setItem('ci_admin_user', JSON.stringify(this.currentUser));
-            this.showAdminPanel();
-            return true;
-        }
-        return false;
     }
 
-    // ... rest of your existing AdminAuth methods
-}
+    detectSuspiciousActivity() {
+        const logs = this.getLogs();
+        const recentLogs = logs.slice(0, 10);
+        const uniqueIPs = new Set(recentLogs.map(log => log.ip));
+        
+        if (uniqueIPs.size > 3) {
+            this.triggerSuspiciousAlert('Multiple IP addresses detected');
+        }
+    }
 
-// Initialize the enhanced system
-const userManager = new UserManager();
-const adminAuth = new AdminAuth();
+    triggerSuspiciousAlert(reason) {
+        const terminal = document.getElementById('opsTerminal');
+        if (terminal) {
+            const alertMessage = `
+🚨🚨 SUSPICIOUS ACTIVITY 🚨🚨
+Reason: ${reason}
+Time: ${new Date().toLocaleString()}
+Action: Monitor closely
+
+            `;
+            typeText(terminal, alertMessage + '\n');
+        }
+    }
+}
